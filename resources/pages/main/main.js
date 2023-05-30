@@ -1,0 +1,1 @@
+const bg = "/media/bg0.png"
