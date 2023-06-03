@@ -27,7 +27,7 @@ public class App {
                     if (DataOperator.getFileSize(filepath)<10500000) {
                         server.sendResponse(contentType+"/"+ext, DataOperator.readFileAsBytes(filepath));
                     } else {
-                        server.sendResponseAsync(contentType+"/"+ext, filepath);
+                        server.sendResponse(contentType+"/"+ext, filepath);
                     }
                 } else {
                     server.send404Response(res, ip, request);
