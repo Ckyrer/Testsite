@@ -1,0 +1,19 @@
+body {
+    background-image: url("/media/bg2.png");
+    background-size: cover;
+    display: flex;
+}
+
+.container {
+    margin-top: 20%;
+    width: min-content;
+    padding: 10px   ;
+    border: solid;
+    border-color: white;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 150px;
+}
