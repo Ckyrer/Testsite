@@ -11,7 +11,7 @@ public class App {
         DataOperator.projectPath+="resources/";
 
         // OVERWATCH
-        server.addRequestHandler("OVERWATCH", false, (String res, String ip, String req) -> {
+        server.addOverwatchHandler((String res, String ip, String req) -> {
             if (loginedClients.contains(ip) || res.equals("login") || res.startsWith("CMD<>login<>") || res.equals("media/bg2.png")) {
                 return true;
             }
@@ -30,14 +30,20 @@ public class App {
 
             page = page.replace("<!-- ARTICLES HERE -->", articles);
             server.sendResponse(page);
-
-            return true;
         });
         
         // Login page
         server.addRequestHandler("login", false, (String res, String ip, String req) -> {
-            server.sendResponse(DataOperator.buildPage("pages/login"));
-            return true;
+            if (loginedClients.contains(ip)) {
+                server.sendResponse("<script>window.location.replace('/')</script>");
+            } else {
+                server.sendResponse(DataOperator.buildPage("pages/login"));
+            }
+        });
+
+        // Adding page  
+        server.addRequestHandler("add", false, (String res, String ip, String req) -> {
+            server.sendResponse(DataOperator.buildPage("pages/add"));
         });
 
         // Media files
@@ -47,17 +53,16 @@ public class App {
             String ext = filepath.substring(filepath.lastIndexOf(".")+1);
             if (ext.equals("mp4")) {contentType="video";}
             else if (IMAGES_EXTENSIONS.contains(ext)) {contentType="image";}
-                if (DataOperator.isFileExist(filepath)) {
-                    if (DataOperator.getFileSize(filepath)<10500000) {
-                        server.sendResponse(contentType+"/"+ext, DataOperator.readFileAsBytes(filepath));
-                    } else {
-                        server.sendResponse(contentType+"/"+ext, filepath);
-                    }
-                } else {
-                    server.send404Response(res, ip, request);
-                }
 
-            return true;
+            if (DataOperator.isFileExist(filepath)) {
+                if (DataOperator.getFileSize(filepath)<10500000) {
+                    server.sendResponse(contentType+"/"+ext, DataOperator.readFileAsBytes(filepath));
+                } else {
+                    server.sendResponse(contentType+"/"+ext, filepath);
+                }
+            } else {
+                server.send404Response(res, ip, request);
+            }
         });
 
         //##########################################################################################
@@ -65,21 +70,17 @@ public class App {
         //##########################################################################################
 
         server.addRequestCMDHandler("login", (String ip, String[] args) -> {
-            if (args[0]=="Ckyrer" && args[1]=="veni") {
+            if (args[0].equals("Ckyrer") && args[1].equals("veni")) {
                 loginedClients.add(ip);
                 server.sendResponse("1");
             } else {
                 server.sendResponse("0");
             }
-            return true;
         });
 
         server.addRequestCMDHandler("addArticle", (String ip, String[] args) -> {
-            System.out.println(args[0]);
             Database.addArticle(args[0], args[1]);
             server.sendResponse("1");
-
-            return true;
         });
 
         server.start();

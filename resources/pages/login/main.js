@@ -8,7 +8,7 @@ function login() {
     xhr.onreadystatechange = () => {
         if (xhr.readyState!=4) return
         if (xhr.responseText==1) {
-            location.reload()
+            document.location.reload()
         } else {
             alert("Неверный логин или пароль")
         }

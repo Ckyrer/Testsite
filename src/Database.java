@@ -12,8 +12,8 @@ public class Database {
             try (FileInputStream file = new FileInputStream(DataOperator.projectPath+"data.txt")) {
                 String[] cnt = new String(file.readAllBytes()).split("///");
                 ArrayList<String[]> res = new ArrayList<String[]>();
-                for (String el : cnt) {
-                    res.add(el.split("<>"));
+                for (int i = cnt.length-1; i >= 0; i--) {
+                    res.add(cnt[i].split("<>"));
                 }
                 // res.remove(res.size()-1);
                 return res;
@@ -25,7 +25,7 @@ public class Database {
     }
 
     public static final void addArticle(String title, String content) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
         try {
             try (FileOutputStream file = new FileOutputStream(DataOperator.projectPath+"data.txt", true)) {
                 file.write((title+"<>"+content+"<>"+dtf.format(LocalDateTime.now())+"///").getBytes());
